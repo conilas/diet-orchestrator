@@ -39,10 +39,11 @@ Now you should have your `localhost.crt` and `locahost.key`. Let us now build, g
 
 ```
 go build
-gcloud beta emulators firestore start --host-port=0.0.0.0
+gcloud beta emulators firestore start --host-port=0.0.0.0 &
 export FIRESTORE_EMULATOR_HOST=0.0.0.0:8080
 ./diet-scheduler -certificate=../localhost.crt -server=localhost:9000 -interval 45
 ```
+**Note**: for better logs, run the firestore emulator in another terminal.
 
 The flags should be self-explanatory, and that is an extensive list of them. If in doubt, just run `./diet-scheduler -help`.
 
@@ -54,9 +55,11 @@ The tests were made using suites as we needed some work to get the mocks setup. 
 
 ```
 cd processors_test
-gcloud beta emulators firestore start --host-port=0.0.0.0
+gcloud beta emulators firestore start --host-port=0.0.0.0 &
 export FIRESTORE_EMULATOR_HOST=0.0.0.0:8080
 go test
 ```
+
+**Note**: for better logs, run the firestore emulator in another terminal.
 
 You do not need the food service running as we mock it; however, you should need firestore up and running. We perform a cleanup after every round of tests. The author could not find a properly good way to mock firestore. 
