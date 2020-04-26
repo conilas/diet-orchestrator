@@ -31,8 +31,8 @@ First, clone the project and go to the folder. This project was made using go mo
 Before we run the service, let's generate a localhost certificate to use for the communication between the food service and this scheduler.
 
 ```
-openssl req -x509 -out localhost.crt -keyout localhost.key   -newkey rsa:2048 -nodes -sha256   -subj '/CN=localhost' -extensions EXT -config <(
-printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+openssl req -x509 -nodes -new -sha256 -days 1024 -newkey rsa:2048 -keyout localhost.key -out localhost.pem -subj "/C=US/CN=localhost"
+openssl x509 -outform pem -in localhost.pem -out localhost.crt
 ```
 
 Now you should have your `localhost.crt` and `locahost.key`. Let us now build, get firebase up & export its connection and run the program:
