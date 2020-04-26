@@ -1,4 +1,6 @@
-# diet-orchestrator
+# diet-orchestrator 
+
+![test and build](https://github.com/conilas/diet-orchestrator/workflows/test%20and%20build/badge.svg?branch=master)
 
 This project serves the purpose of orchestrating a food delivery system - by integrating with such, we are able to make the food move from the order to the kitchen up to a drone delivery system! :helicopter:
 
