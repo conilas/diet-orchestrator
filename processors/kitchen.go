@@ -3,9 +3,9 @@ package processors
 import (
 	"context"
 	pb "diet-scheduler/be-test/pkg/food/v1"
-	"log"
 	conn "diet-scheduler/connections"
 	db "diet-scheduler/database"
+	"log"
 )
 
 var KitchenToOrderStatusMap = map[pb.KitchenOrder_Status]pb.Order_Status{

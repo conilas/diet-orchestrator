@@ -3,9 +3,9 @@ package processors
 import (
 	"context"
 	pb "diet-scheduler/be-test/pkg/food/v1"
-	field_mask "google.golang.org/genproto/protobuf/field_mask"
 	conn "diet-scheduler/connections"
 	db "diet-scheduler/database"
+	field_mask "google.golang.org/genproto/protobuf/field_mask"
 	"log"
 )
 

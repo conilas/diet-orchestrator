@@ -28,7 +28,7 @@ func CreateConnections(address, certificate string) ServiceClients {
 	}
 
 	return ServiceClients{OrderClient: pb.NewOrderServiceClient(conn),
-    KitchenClient: pb.NewKitchenServiceClient(conn),
-    DatabaseClient: *CreateFirestoreConnection(),
-    ShipmentClient: pb.NewDroneServiceClient(conn)}
+		KitchenClient:  pb.NewKitchenServiceClient(conn),
+		DatabaseClient: *CreateFirestoreConnection(),
+		ShipmentClient: pb.NewDroneServiceClient(conn)}
 }

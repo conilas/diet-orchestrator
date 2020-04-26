@@ -34,10 +34,10 @@ var orderProcessment ComposedProcessor = ProcessOrderToKitchen
 var kitchenProcessment ComposedProcessor = ProcessNextStep(GetKitchenStatusByOrder, IsKitchenProcessed, KitchenToOrderStatusMapper, ProcessKitchenToShipment)
 var deliveryProcess ComposedProcessor = ProcessNextStep(GetShipmentStatusByOrder, IsShipmentProcessed, ShipmentToOrderStatusMapper, ProcessShipmentFinalization)
 
-var StatusToProcessFunction = map[pb.Order_Status] ComposedProcessor{
-	pb.Order_NEW: orderProcessment,
+var StatusToProcessFunction = map[pb.Order_Status]ComposedProcessor{
+	pb.Order_NEW:         orderProcessment,
 	pb.Order_PREPARATION: kitchenProcessment,
-	pb.Order_IN_FLIGHT: deliveryProcess,
+	pb.Order_IN_FLIGHT:   deliveryProcess,
 }
 
 func ProcessSingleOrder(order pb.Order, ctx context.Context, client conn.ServiceClients) {
