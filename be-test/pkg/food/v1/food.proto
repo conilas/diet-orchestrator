@@ -1,0 +1,214 @@
+syntax = "proto3";
+package food.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/field_mask.proto";
+
+option go_package = "github.com/dietdoctor/be-test/pkg/food/v1;food";
+
+// Order Service.
+service OrderService {
+  // CreateOrder creates a new order.
+  rpc CreateOrder(CreateOrderRequest) returns(Order) {
+    option(google.api.http) = {
+      post : "/v1/orders"
+      body : "order"
+    };
+  };
+
+  // GetOrder gets the order.
+  rpc GetOrder(GetOrderRequest) returns(Order) {
+    option(google.api.http) = {
+      get : "/v1/{name=orders/*}"
+    };
+  };
+
+  // ListOrders lists orders.
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse) {
+    option (google.api.http) = {
+      get: "/v1/orders"
+    };
+  };
+
+  // UpdateOrder update the order resource.
+  rpc UpdateOrder(UpdateOrderRequest) returns(Order) {
+    option(google.api.http) = {
+      patch : "/v1/{order.name=orders/*}"
+      body : "order"
+    };
+  };
+};
+
+// Kitchen Service.
+service KitchenService {
+  // CreateKitchenOrder creates a new kitchen order.
+  rpc CreateKitchenOrder(CreateKitchenOrderRequest) returns(KitchenOrder) {
+    option(google.api.http) = {
+      post : "/v1/kitchenorders"
+      body : "kitchenorder"
+    };
+  };
+
+  // GetKitchenOrder gets the kitchen order.
+  rpc GetKitchenOrder(GetKitchenOrderRequest) returns(KitchenOrder) {
+    option(google.api.http) = {
+      get : "/v1/{name=kitchenorders/*}"
+    };
+  };
+};
+
+// Drone Delivery Service.
+service DroneService {
+  // CreateShipment creates a new shipment request.
+  rpc CreateShipment(CreateShipmentRequest) returns(Shipment) {
+    option(google.api.http) = {
+      post : "/v1/shipments"
+      body : "shipment"
+    };
+  };
+
+  // GetShipment gets the drone delivery shipment.
+  rpc GetShipment(GetShipmentRequest) returns(Shipment) {
+    option(google.api.http) = {
+      get : "/v1/{name=shipments/*}"
+    };
+  };
+};
+
+// Order represents a food delivery order.
+message Order {
+  // Output only. Resource name of the order, assigned by the server.
+  // For example: "orders/83e00bfa-b99c-434e-81d8-43d7c66eabb5".
+  string name = 1;
+  // Output only. Create timestamp in RFC3339 text format.
+  string create_time = 2;
+  // Output only. Update timestamp in RFC3339 text format.
+  string update_time = 3;
+  // Output only. Customer ID who placed this order.
+  string customer_id = 4;
+
+  enum Status {
+    UNKNOWN = 0;
+    NEW = 1; // The order has been placed in the system.
+    PREPARATION = 2; // The food is being prepared in the kitchen.
+    IN_FLIGHT = 3; // The food package is in the air.
+    DELIVERED = 4; // The order has been delivered.
+    REJECTED = 5; // The order has been rejected by the customer.
+    CANCELLED = 6; // The order has been cancelled by the customer before delivery attempt.
+  }
+
+  // Most recently observed status of the food order, populated by the scheduler.
+  Status status = 5;
+}
+
+// Request message for CreateOrder method.
+message CreateOrderRequest {
+  // The order resource to create.
+  Order order = 1;
+}
+
+// Request message for GetOrder method.
+message GetOrderRequest {
+  // Resource name of the order.
+  // For example: "orders/83e00bfa-b99c-434e-81d8-43d7c66eabb5".
+  string name = 1;
+}
+
+// Request message for ListOrders method.
+message ListOrdersRequest {
+  // The order status filter expression.
+  Order.Status status_filter = 1;
+  // The maximum number of items to return.
+  int32 page_size = 2;
+  // The nextPageToken value returned from a previous List request, if any.
+  string page_token = 3;
+}
+
+// Response message for ListOrders method.
+message ListOrdersResponse {
+  // A list of orders.
+  repeated Order orders = 1;
+  // Token to retrieve the next page of results, or empty if there are no
+  // more results in the list.
+  string next_page_token = 2;
+}
+
+// Request message for UpdateOrder method.
+message UpdateOrderRequest {
+  // The order resource which updates the resource on the server.
+  Order order = 1;
+
+  // Only updates the `order` fields indicated by this mask.
+  // The field mask must not be empty, and it must not contain fields that are
+  // immutable or only set by the server.
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+// KitchenOrder represents kitchen order to prepare the meal.
+message KitchenOrder {
+  // Output only. Resource name of the order, assigned by the server.
+  // For example: "kitchenorders/83e00bfa-b99c-434e-81d8-43d7c66eabb5".
+  string name = 1;
+  // Output only. Create timestamp in RFC3339 text format.
+  string create_time = 2;
+  // Output only. Update timestamp in RFC3339 text format.
+  string update_time = 3;
+
+  enum Status {
+    UNKNOWN = 0;
+    NEW = 1; // The order has been placed in the kitchen, waiting to be accepted.
+    PREPARATION = 2; // The food is being prepared in the kitchen.
+    PACKAGED = 3; // The meal has been cooked and packaged.
+  }
+
+  // Output only. Most recently observed status of the kitchen order, populated by the system.
+  Status status = 5;
+}
+
+// Request message for CreateKitchenOrder method.
+message CreateKitchenOrderRequest {
+  // The kitchen order resource to create.
+  KitchenOrder kitchenorder = 1;
+}
+
+// Request message for GetKitchenOrder method.
+message GetKitchenOrderRequest {
+  // Resource name of the kitchen order.
+  // For example: "kitchenorders/83e00bfa-b99c-434e-81d8-43d7c66eabb5".
+  string name = 1;
+}
+
+// Shipment represents drone delivery shipment.
+message Shipment {
+  // Output only. Resource name of the order, assigned by the server.
+  // For example: "shipments/83e00bfa-b99c-434e-81d8-43d7c66eabb5".
+  string name = 1;
+  // Output only. Create timestamp in RFC3339 text format.
+  string create_time = 2;
+  // Output only. Update timestamp in RFC3339 text format.
+  string update_time = 3;
+
+  enum Status {
+    UNKNOWN = 0;
+    NEW = 1; // The shipping request has been created.
+    COLLECTED = 2; // The package has been collected from the kitchen.
+    DELIVERED = 3; // The order has been delivered.
+    REJECTED = 4; // The package has been rejected by the customer.
+  }
+
+  // Output only. Most recently observed status of the kitchen order, populated by the system.
+  Status status = 5;
+}
+
+// Request message for CreateShipment method.
+message CreateShipmentRequest {
+  // The shipment request resource to create.
+  Shipment shipment = 1;
+}
+
+// Request message for GetShipment method.
+message GetShipmentRequest {
+  // Resource name of the shipment request.
+  // For example: "shipments/83e00bfa-b99c-434e-81d8-43d7c66eabb5".
+  string name = 1;
+}
